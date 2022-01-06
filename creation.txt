@@ -1,0 +1,168 @@
+DROP DATABASE SUPERMARKET;
+
+CREATE DATABASE SUPERMARKET;
+
+USE SUPERMARKET;
+
+CREATE TABLE store (
+ store_id int primary key,
+ address varchar(50) NOT NULL,
+ store_postcode char(8) NOT NULL
+);
+INSERT INTO store VALUES 
+(0, 'Dhanmondi', '1216'), 
+(1, '1 One st', '3053'),
+(2, '2 Two st', '3056'),
+(3, '3 Three st', '3010'),
+(4, '4 Four st', '3053'),
+(5, '5 Five st', '1216');
+
+CREATE TABLE checkout_store (
+store_id int,    
+foreign key (store_id) references store(store_id),
+id int primary key
+);
+
+INSERT INTO checkout_store
+VALUES
+(1, 2),
+(2, 4),
+(3, 1),
+(4, 5),
+(5, 3);
+
+CREATE TABLE customer (
+ customer_id int primary key,
+ firstName varchar(50) NOT NULL,
+ lastName varchar(50) NOT NULL,
+ dateofbirth date NOT NULL,
+ store_postcode char(8) NOT NULL
+);
+INSERT INTO customer VALUES
+(0, 'NAWAR', 'ANBAR', '1981-01-01', '1216'),
+(1, 'Andy', 'Alpha', '1981-01-01', '3053'),
+(2, 'Beyonce', 'Bravo', '1982-02-02', '3053'),
+(3, 'Cynthia', 'Charlie', '1983-03-03', '3010'),
+(4, 'Dave', 'Delta', '1984-04-04', '3053'),
+(5, 'Evie', 'Echo', '1985-05-05', '3010'),
+(6, 'Fred', 'Foxtrot', '1986-06-06', '3053'),
+(7, 'Gary', 'Golf', '1987-07-07', '3056'),
+(8, 'Harriet', 'Hotel', '1988-08-08', '3010'),
+(9, 'Irene', 'India', '1989-09-09', '3123'),
+(10, 'Jack', 'Juliet', '1990-01-01', '3123'),
+(11, 'Sadman', 'Shapnil', '1996-10-13','1216');
+
+CREATE TABLE paymentmethod (
+ process_name varchar(10) primary key,
+ id char(1) NOT NULL 
+);
+
+INSERT INTO paymentmethod
+VALUES
+('card','c'),
+('money', 'm');
+
+CREATE TABLE productcategory (
+ category char(1) primary key,
+ name varchar(50) NOT NULL
+);
+INSERT INTO productcategory VALUES
+('c', 'clothing'),
+('f', 'food'),
+('h', 'household');
+
+CREATE TABLE product (
+ product_id char(3) primary key,
+ product_name varchar(50) NOT NULL,
+ category char(1),   
+ FOREIGN KEY (category) references productcategory(category) ,
+ price decimal(5,2) NOT NULL,
+ tax decimal(4,2) 
+);
+INSERT INTO product VALUES
+('app', 'apple', 'f', '1.11', '0.00'),
+('bre', 'bread', 'f', '2.22', '0.00'),
+('cab', 'cabbage', 'f', '3.33', '0.00'),
+('dat', 'dates', 'f', '4.44', '0.00'),
+('egg', 'eggs', 'f', '5.55', '0.00'),
+('fan', 'fanta', 'h', '6.66', '0.67'),
+('gra', 'grape', 'h', '7.77', '0.78'),
+('hai', 'hairdryer', 'h', '8.88', '0.89'),
+('iro', 'iron', 'h', '9.99', '1.00'),
+('jac', 'jacket', 'c', '10.00', '1.00');
+
+CREATE TABLE purchase (
+ purchase_id int primary key,
+ date_of_purchase date NOT NULL,
+ store_id int,
+ foreign key (store_id) references store(store_id) ,
+ checkout int NOT NULL,
+ id char(1) NOT NULL,
+ customer_id int,
+ foreign key (customer_id) references customer(customer_id)
+);
+INSERT INTO purchase VALUES
+(0, '2017-05-31', 1, 1, 'm', 7),
+(1, '2017-05-31', 1, 1, 'm', 1),
+(2, '2017-06-01', 2, 2, 'm', 1),
+(3, '2017-06-02', 3, 3, 'c', 1),
+(4, '2017-06-03', 4, 1, 'm', 2),
+(5, '2017-06-04', 5, 2, 'm', 6),
+(6, '2017-06-05', 1, 2, 'm', 2),
+(7, '2017-06-06', 2, 1, 'm', 8),
+(8, '2017-06-07', 3, 2, 'm', 9),
+(9, '2017-06-08', 4, 3, 'm', 3),
+(10, '2017-06-10', 1, 3, 'm', 4),
+(11, '2017-06-11 ', 2, 5, 'c', 4),
+(12, '2017-06-12 ', 3, 3, 'c', 5),
+(13, '2017-06-13 ', 4, 3, 'c', 5),
+(14, '2017-06-14', 1, 5, 'c', 5),
+(15, '2017-06-15 ', 2, 5, 'c', 3),
+(16, '2017-06-16', 3, 1, 'c', 1),
+(17, '2017-06-17', 1, 3, 'c', 7),
+(18, '2017-06-18', 2, 4, 'm', 8),
+(19, '2017-06-19', 3, 2, 'c', 3),
+(20, '2017-06-20', 1, 2, 'c', 9);
+
+CREATE TABLE purchase_item (
+purchase_id int,    
+foreign key (purchase_id) references purchase(purchase_id) ,
+product_id char(3),
+foreign key (product_id) references product(product_id),
+ quantity int NOT NULL
+);
+
+INSERT INTO purchase_item VALUES
+(1, 'app', 1),
+(1, 'app', 2),
+(1,'cab', 3),
+(2,'egg', 4),
+(2, 'app', 5),
+(3, 'app', 7),
+(5,'app', 9),
+(6, 'gra', 7),
+(7, 'app', 6),
+(8, 'app', 5),
+(9, 'gra', 2),
+(9, 'gra', 1),
+(9,'cab', 2),
+(9,'egg', 3),
+(9, 'jac', 4),
+(10,'cab', 6),
+(10, 'jac', 5),
+(11, 'egg', 7),
+(12, 'jac', 8),
+(12, 'gra', 9),
+(12, 'egg', 10),
+(13, 'gra', 9),
+(14, 'jac', 8),
+(15, 'egg', 7),
+(15, 'hai', 6),
+(15, 'jac', 5),
+(16, 'jac', 4),
+(17,'hai', 3),
+(18,'hai', 1),
+(18,'cab', 2),
+(19, 'jac', 3),
+(19,'jac', 2),
+(20, 'jac', 4);
